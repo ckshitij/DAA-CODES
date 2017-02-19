@@ -47,7 +47,7 @@ void Display(int *arr, int k, int n)
 		forn(j,n)
 		{	
 			if(arr[k*n*n + i*n + j] == MAX)
-				printf("  -\t" );
+				printf("  inf\t" );
 			else
 				printf("  %d\t",arr[k*n*n + i*n + j]);
 		}
@@ -76,9 +76,9 @@ void Warshall(int *arr, int n )
 
 void floyd(int *arr,int n)
 {
-	for(int k=1; k <=n ; k++)
+	for(int k = 1; k <= n ; k++)
 	{
-		int d=k-1;
+		int d = k-1;
 		forn(i,n)
 		{
 			forn(j,n)
@@ -86,9 +86,7 @@ void floyd(int *arr,int n)
 					if(arr[(k-1)*n*n + i*n + d] != MAX && arr[(k-1)*n*n + d*n + j] != MAX)
 						arr[k*n*n+i*n+j] = min(arr[(k-1)*n*n+i*n+j], arr[(k-1)*n*n + i*n + d] + arr[(k-1)*n*n + d*n + j]);
 					else
-					{
 						arr[k*n*n+i*n+j] = arr[(k-1)*n*n+i*n+j];
-					}
 			}
 		}
 		printf("\n \n\t FOR K =  %d \n",k);
