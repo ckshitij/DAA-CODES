@@ -47,7 +47,7 @@ hufftree *createtree()	// function creation of Tree
 	hufftree *newnode = (hufftree *)malloc(sizeof(hufftree));
 	newnode->left = NULL;
 	newnode->right = NULL ;
-	return newnode;	
+	return newnode;
 }
 
 node *push(node *head,client ar) 	// function for Insertion
@@ -126,16 +126,16 @@ void inorder(hufftree *root,int index,char ch[],hashmap map[])		// FUNCTION FOR 
 			ch[index] = '\0';
 			strcpy(map[root->data.id - 'a'].code,ch);
 		}
-		ch[index] = '0';
+		ch[index] = '1';
 		inorder(root->left,index+1,ch,map);
 		printf("THE frequency is %d \n", root->data.frequency);
-		ch[index] = '1';
+		ch[index] = '0';
 		inorder(root->right,index+1,ch,map);
 	}
 }
 
 
-node* input_sort(client ar[] , int n , node *head ,int check[]) // Functon for INPUT 
+node* input_sort(client ar[] , int n , node *head ,int check[]) // Functon for INPUT
 {
 	char g;
 	for (int i = 0; i < n; ++i)
@@ -177,7 +177,7 @@ hufftree* build_tree(node *head)	// Function for Building Tree
 		}
 		else
 		{
-			LC = temp->u.address; 
+			LC = temp->u.address;
 		}
 		head = head->next;
 		free(temp);
@@ -193,7 +193,7 @@ hufftree* build_tree(node *head)	// Function for Building Tree
 		}
 		else
 		{
-			RC = temp->u.address; 
+			RC = temp->u.address;
 		}
 		head = head->next;
 		parent = createtree();
@@ -231,7 +231,7 @@ void deleteTree(hufftree* node) 		// for FREE TREE
     deleteTree(node->right);
     printf("\n Deleting node: %d", node->data.frequency);
     free(node);
-} 
+}
 
 void free_all(hashmap str[] , hufftree *node)
 {
@@ -248,7 +248,7 @@ int main()
 	hashmap str[26];
 	int check[26];
 	int n,sw;
-	char g,ch[500],string[500]; 
+	char g,ch[500],string[500];
 	node *head = NULL;
 	hufftree *root = NULL;
 	do
@@ -277,8 +277,8 @@ int main()
 							if(root!=NULL)
 							{
 								free_all(str,root);
-							}						
-							root = NULL;	
+							}
+							root = NULL;
 							root = build_tree(head);
 							inorder(root,0,ch,str);
 							for (int i = 0 ; i < 26 ; ++i)
@@ -288,7 +288,7 @@ int main()
 							}
 						}
 						else
-							printf("Please first take input \n");	
+							printf("Please first take input \n");
 						break;
 			case 3 :    if(root != NULL)
 						{
@@ -309,7 +309,7 @@ int main()
 								{
 									printf("%s", str[string[i]- 'a'].code);
 								}
-								printf("\n\n");		
+								printf("\n\n");
 							}
 
 						}
@@ -348,12 +348,12 @@ int main()
 										printf("%c",temp->data.id);
 										temp = root;
 									}
-									else if(string[i] == '0')
+									else if(string[i] == '1')
 									{
 										temp = temp->left;
 										i++;
 									}
-									else if(string[i] == '1')
+									else if(string[i] == '0')
 									{
 										temp = temp->right;
 										i++;
@@ -364,7 +364,7 @@ int main()
 								else
 									printf("Invalid String\n");
 							}
-							
+
 						}
 						else
 							printf("Please first Build the Tree \n");
@@ -376,5 +376,3 @@ int main()
 	}while(sw != 5);
 	return 0;
 }
-
-
