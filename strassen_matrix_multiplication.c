@@ -1,235 +1,155 @@
 #include <stdio.h>
 #include <stdlib.h>
-#define end printf("\n")
-#define forn(i,sz) for(int i = 0 ; i < (sz) ; i++)
+#include <math.h>
 
-
-
-int *memory(int *array,int n)
+int* memory(int n)
 {
-	array = (int *)malloc((n * n) * sizeof(int));
-	return array;
+	return (int*)calloc(n*n,sizeof(int));
 }
 
-void dealloc(int *val)
+void input(int *a,int n,int size)
 {
-	free(val);
+	for(int i = 0; i < n ; i++)
+		for(int j = 0 ; j < n ; j++)
+			scanf("%d",a + i*size + j);
 }
 
-int *A11 , *A12 , *A21 , *A22 , *B11, *B12 , *B21, *B22 , *s1 , *s2 , *p1 , *p2 , *p3 , *p4 , *p5 , *p6 , *p7 ;
-int *final ;
-
-void init(int n)
+void print(int *a,int n,int size)
 {
-	A11 = memory(A11,n) ; A12 = memory(A12,n) ; A21 = memory(A21,n) ; A22 = memory(A22,n);
-	B11 = memory(B11,n) ; B12 = memory(B12,n) ; B21 = memory(B21,n) ; B22 = memory(B22,n);
-	s1 = memory(s1,n) ; s2 = memory(s2,n) ;
-	p1 = memory(p1,n) ; p2 = memory(p2,n) ; p3 = memory(p3,n) ; p4 = memory(p4,n);
-	p5 = memory(p5,n) ; p6 = memory(p6,n) ; p7 = memory(p7,n) ;
-	final = memory(final,n);
-}
-
-void freeinit()
-{
-	dealloc(A11);dealloc(A12);dealloc(A21);dealloc(A22);
-	dealloc(B11);dealloc(B12);dealloc(B21);dealloc(B22);
-	dealloc(s1);dealloc(s2);
-	dealloc(p1);dealloc(p2);dealloc(p3);dealloc(p4);dealloc(p5);dealloc(p6);dealloc(p7);
-	dealloc(final);
-}
-
-
-int* input(int *mat , int n)
-{
-	mat = memory(mat,n); 
-	forn(i,n)
+	for(int i = 0; i < n ; i++)
 	{
-		forn(j,n)
+		for(int j = 0 ; j < n ; j++)
 		{
-			scanf("%d",mat+i*n+j);
+			printf("%d ",a [ i*size + j]);
 		}
-	}
-	return mat;
-}
-
-void display(int *mat , int n)
-{
-	forn(i,n)
-	{	
-		forn(j,n)
-		{
-			printf("%d  ", *(mat+i*n+j) );
-		}
-		end;
+		printf("\n");
 	}
 }
 
-int* Brute(int *a,int *b,int n)
+void mult(int *c,int *a,int *b,int size)
 {
-	int *c = memory(c,n); 
-	forn(i,n)
-	{
-		forn(j,n)
-		{
-			forn(k,n)
-			{
-				c[i*n+j] += a[i*n+k] * b[k*n+j];
-			}
-		}
-	}
-	return c;
+	for(int i = 0 ; i < size ; i++)
+		for(int j = 0 ; j < size ; j++)
+			for(int k = 0 ; k < size ; k++)
+				c[i*size + j] += a[ i*size + k] * b[ k*size + j];
 }
 
-int* Add_Mat(int* A,int *B,int n)
+void add(int *c,int *a,int *b,int size)
 {
-	int *fl = memory(fl,n);
-	forn(i,n)
-	{
-		forn(j,n)
-		{
-			fl[ i*n + j] = A[ i*n + j] + B[ i*n + j];
-		}
-	}
-	return fl;
-} 
-
-int* Sub_Mat(int* A,int *B,int n)
-{
-	int *fm = memory(fm,n);
-	forn(i,n)
-	{
-		forn(j,n)
-		{
-			fm[ i*n + j] = A[ i*n + j] - B[ i*n + j];
-		}
-	}
-	return fm;
+	for(int i = 0 ; i < size ; i++)
+		for(int j = 0 ; j < size ; j++)
+				c[i*size + j] = a[ i*size + j] + b[ i*size + j];
 }
 
-int * Strassen_Mat(int *a,int *b,int *final,int n)
+void sub(int *c,int *a,int *b,int size)
+{
+	for(int i = 0 ; i < size ; i++)
+		for(int j = 0 ; j < size ; j++)
+				c[i*size + j] = a[ i*size + j] - b[ i*size + j];
+}
+
+void st_mul(int *c,int *a,int *b,int n)
 {
 	if(n == 1)
 	{
-		final[0] = a[0] * b[0];
+		c[0] = a[0] * b[0];
+		return;
 	}
-	else
+	int *a11 = memory(n/2),*a12 = memory(n/2),*a21 = memory(n/2),*a22 = memory(n/2);
+	int *b11 = memory(n/2),*b12 = memory(n/2),*b21 = memory(n/2),*b22 = memory(n/2);
+	int *c11 = memory(n/2),*c12 = memory(n/2),*c21 = memory(n/2),*c22 = memory(n/2);
+	int *p = memory(n/2),*q = memory(n/2),*r = memory(n/2),*s = memory(n/2);
+	int *t = memory(n/2),*u = memory(n/2),*v = memory(n/2),*t1 = memory(n/2),*t2 = memory(n/2);
+	int m = n / 2;
+	for(int i = 0 ; i < m ; i++)
 	{
-		forn(i,n/2)
+		for (int j = 0; j < m; ++j)
 		{
-			forn(j,n/2)
-			{
-				A11[ i*(n/2) + j] = a[ i*(n) + j];
-	            A12[ i*(n/2) + j] = a[ i*(n) + (j+ n/2) ];
-	            A21[ i*(n/2) + j] = a[ (i+ n/2) * n + j ];
-	            A22[ i*(n/2) + j] = a[ (i+ n/2) * n + (j+ n/2) ];
-	            B11[ i*(n/2) + j] = b[ i*(n) + j];
-	            B12[ i*(n/2) + j] = b[ i*(n) + (j+ n/2) ];
-	            B21[ i*(n/2) + j] = b[ (i+ n/2) * n + j ];
-	            B22[ i*(n/2) + j] = b[ (i+ n/2) * n + (j+ n/2) ];
-			}
-		}
-
-		//Caculating  p1
-		s1 = Sub_Mat(B12,B22,n/2);
-		p1 = Strassen_Mat(A11,s1,p1,n/2);
-		
-		//Caculating  p2
-		s1 = Add_Mat(A11,A12,n/2);
-		p2 = Strassen_Mat(s1,B22,p2,n/2);
-		
-		//Caculating  p3
-		s1 = Add_Mat(A21,A22,n/2);
-		p3 = Strassen_Mat(s1,B11,p3,n/2);
-		
-		//Caculating  p4
-		s1 = Sub_Mat(B21,B11,n/2);
-		p4 = Strassen_Mat(A22,s1,p4,n/2);
-		
-		//Caculating  p5
-		s1 = Add_Mat(A11,A22,n/2);
-		s2 = Add_Mat(B11,B22,n/2);
-		p5 = Strassen_Mat(s1,s2,p5,n/2);
-		
-		//Caculating  p6
-		s1 = Sub_Mat(A12,A22,n/2);
-		s2 = Add_Mat(B21,B22,n/2);
-		p6 = Strassen_Mat(s1,s2,p6,n/2);
-
-		//Caculating  p7
-		s1 = Sub_Mat(A11,A21,n/2);
-		s2 = Add_Mat(B11,B12,n/2);
-		p7 = Strassen_Mat(s1,s2,p7,n/2);
-
-		forn(i,n/2)
-		{
-			forn(j,n/2)
-			{	
-				final[ i*n + j] = p5[ i*n + j] + p4[ i*n + j] - p2[ i*n + j] + p6[ i*n + j];
-				final[ i*n + (j+ n/2) ] = p1[ i*n + j] + p2[ i*n + j];
-				final[ (i+ n/2) * n + j ] = p3[ i*n + j] + p4[ i*n + j];
-				final[ (i+ n/2) * n + (j+ n/2) ] = p1[ i*n + j] + p5[ i*n + j] - p3[ i*n + j] - p7[ i*n + j];
-			}	
+				a11[i*m + j] = 	a[i*n + j];
+				a12[i*m + j] = 	a[i*n + j+m];
+				a21[i*m + j] = 	a[(i+m)*n + j];
+				a22[i*m + j] = 	a[(i+m)*n + j+m];
+				b11[i*m + j] = 	b[i*n + j];
+				b12[i*m + j] = 	b[i*n + j+m];
+				b21[i*m + j] = 	b[(i+m)*n + j];
+				b22[i*m + j] = 	b[(i+m)*n + j+m];
 		}
 	}
-	return final;
+	add(t1,a11,a22,m);
+	add(t2,b11,b22,m);
+	st_mul(p,t1,t2,m);
+	add(t1,a21,a22,m);
+	st_mul(q,t1,b11,m);
+	sub(t1,b11,b22,m);
+	st_mul(r,a11,t1,m);
+	sub(t1,b21,b11,m);
+	st_mul(s,a22,t1,m);
+	add(t2,a12,a11,m);
+	st_mul(t,t2,b22,m);
+	sub(t1,a21,a11,m);
+	add(t2,b12,b11,m);
+	st_mul(u,t1,t2,m);
+	sub(t1,a12,a22,m);
+	add(t2,b21,b22,m);
+	st_mul(v,t1,t2,m);	
+
+	add(t1,p,s,m);
+	add(t2,v,t1,m);
+	sub(c11,t2,t,m);
+	add(c12,r,t,m);
+	add(c21,q,s,m);
+	add(t1,p,r,m);
+	add(t2,u,t1,m);
+	sub(c22,t2,q,m);
+
+	for(int i = 0 ; i < m ; i++)
+	{
+		for (int j = 0; j < m; ++j)
+		{
+				c[i*n + j]			= c11[i*m + j] ;
+				c[i*n + j+m]		= c12[i*m + j] ;
+				c[(i+m)*n + j]		= c21[i*m + j] ;
+				c[(i+m)*n + j+m]	= c22[i*m + j] ;
+		}
+	}
+	free(a11);free(a12);free(a21);free(a22);free(b11);free(b12);free(b21);free(b22);
+	free(c11);free(c12);free(c21);free(c22);free(t1);free(t2);free(p);free(q);
+	free(r);free(s);free(t);free(u);free(v);
 }
 
 int main()
 {
-	int i,j,n,sw;
-	int *mat1 = NULL , *mat2 = NULL , *matF = NULL;
-	system("clear");
+	int i,j,k,n,size;
+	int sw;
+	int *a,*b,*c;
 	do
 	{
-		printf("\n Press 1 for Input Matrix \n Press 2 for Display Matrix \n Press 3 for Brute Forces \n Press 4 for Strassen's Algo \n Press 5 Free Memory \n Press 6 EXIT \n Enter YOUR Choice = ");
-		scanf("%d",&sw);end;
+		printf("\n\nPress 1 for Input \nPress 2 for Brute Multiplication\nPress 3 for Strassen Multiplication\nEnter Your Choice = ");
+		scanf("%d",&sw);
 		switch(sw)
 		{
-			case 1: printf("\n Enter the Size of a Matrix \n");
+			case 1: printf("\nEnter the size of matrix = ");
 					scanf("%d",&n);
-					if(n < 1)
-					{
-						printf("Invalid Size");end;
-						break;
-					}
-					printf("Enter First Matrix \n");
-					mat1 = input(mat1,n);
-					printf("\n Enter Second Matrix \n");
-					mat2 = input(mat2,n);
+					size = 1 << (int)ceil(log2(n));  
+					a = memory(size); b = memory(size);
+					printf("\nEnter the Matrix A \n");
+					input(a,n,size);
+					printf("\nEnter the Matrix B \n");
+					input(b,n,size);
+					printf("\n Matrix A \n");
+					print(a,n,size);
+					printf("\n Matrix B \n");
+					print(b,n,size);
 					break;
-			case 2: if(!mat1 || !mat2)
-					{
-						printf("Empty matrix");end;
-						break;
-					}
-					printf("\n First Matrix \n");
-					display(mat1,n);
-					printf("\n Second Matrix \n");
-					display(mat2,n);
-					end;
+			case 2: c = memory(size);
+					mult(c,a,b,size);
+					print(c,n,size);
 					break;
-			case 3: if(!mat1 || !mat2)
-					{
-						printf("Empty matrix");end;
-						break;
-					}
-					matF = Brute(mat1,mat2,n);
-					display(matF,n);
-					break;
-			case 4: if(!mat1 || !mat2)
-					{
-						printf("Empty matrix");end;
-						break;
-					}
-					init(n);
-					matF = Strassen_Mat(mat1,mat2,matF,n);
-					display(matF,n);
-					break;
-			case 5: freeinit();
-					dealloc(mat1);dealloc(mat2);dealloc(matF);
+			case 3: c = memory(size);
+					st_mul(c,a,b,size);
+					print(c,n,size); 
 					break;
 		}
-	}while(sw != 6);
+	}while(sw != 4);
+	return 0;
 }
-
-
